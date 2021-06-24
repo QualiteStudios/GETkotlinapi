@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.transition.Visibility
 import com.qualitestudios.qualitehttp.R
 import com.qualitestudios.qualitehttp.data.remote.ApiService
@@ -68,7 +69,7 @@ GlobalScope.launch {
 
                     }
                    // binding.tvData.text=response.body()!!.title
-                    binding.recyclerView.layoutManager= LinearLayoutManager(this@MainActivity)
+                    binding.recyclerView.layoutManager= StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL)
                     binding.recyclerView.adapter=RecyclerView(listofdata)
 
                 }
