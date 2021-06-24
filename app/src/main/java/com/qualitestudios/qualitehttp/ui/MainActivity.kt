@@ -3,12 +3,17 @@ package com.qualitestudios.qualitehttp.ui
 import android.app.Application
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.Visibility
 import com.qualitestudios.qualitehttp.R
 import com.qualitestudios.qualitehttp.data.remote.ApiService
 import com.qualitestudios.qualitehttp.data.remote.DataObject
 import com.qualitestudios.qualitehttp.data.remote.NationData
+import com.qualitestudios.qualitehttp.data.remote.postData
 import com.qualitestudios.qualitehttp.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
@@ -24,41 +29,52 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         //setContentView(R.layout.activity_main)
 
         binding= ActivityMainBinding.inflate(layoutInflater)
         val view=binding.root
         setContentView(view)
        binding.button.setOnClickListener { Toast.makeText(this,"Clicked",Toast.LENGTH_SHORT).show()
-
+binding.progressBar2.visibility= View.VISIBLE
 GlobalScope.launch {
-    getData( binding.etName.text.toString())
+    getData()
 }
 
 
 }
     }
 
-    private suspend fun getData(name:String) {
+    private fun getData() {
       val retrofitBuilder=Retrofit.Builder().
               addConverterFactory(GsonConverterFactory.create())
-          .baseUrl("https://api.nationalize.io/").
+          .baseUrl("https://jsonplaceholder.typicode.com/").
               build().
               create(ApiService::class.java)
 
-        val data=retrofitBuilder.getData(name)
-        data.enqueue(object : Callback<NationData?> {
-            override fun onResponse(call: Call<NationData?>, response: Response<NationData?>) {
+        val data=retrofitBuilder.getData()
+        data.enqueue(object : Callback<List<postData>?> {
+            override fun onResponse(
+                call: Call<List<postData>?>,
+                response: Response<List<postData>?>
+            ) {
+                if(response.isSuccessful)
+                {  binding.progressBar2.visibility= View.INVISIBLE
+                    var listofdata= ArrayList<postData>()
+                    for(i in response.body()!!)
+                    {
+                        listofdata.add(i)
 
-                var data=response.body()!!
-               binding.tvData.text=data.name
+                    }
+                   // binding.tvData.text=response.body()!!.title
+                    binding.recyclerView.layoutManager= LinearLayoutManager(this@MainActivity)
+                    binding.recyclerView.adapter=RecyclerView(listofdata)
 
-
-
+                }
             }
 
-            override fun onFailure(call: Call<NationData?>, t: Throwable) {
-                TODO("Not yet implemented")
+            override fun onFailure(call: Call<List<postData>?>, t: Throwable) {
+
             }
         })
 

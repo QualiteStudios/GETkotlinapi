@@ -21,3 +21,13 @@ data class Details(
     val country_id:String,
     val probability:Int
 )
+
+
+data class postData(
+
+    val userid:Int,
+    val id:Int,
+    val title:String,
+    val body:String
+
+)

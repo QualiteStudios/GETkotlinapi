@@ -10,8 +10,8 @@ import retrofit2.http.Query
 interface ApiService {
 //https://api.nationalize.io/?name=chethan
 
-@GET("name={name}")
-suspend fun getData(@Query("name")name:String):Call<NationData>
+@GET("posts")
+fun getData():Call<List<postData>>
 
 
 }
