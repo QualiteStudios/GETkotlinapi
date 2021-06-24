@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 binding.progressBar2.visibility= View.VISIBLE
 GlobalScope.launch {
     getData()
+    //changed
 }
 
 
